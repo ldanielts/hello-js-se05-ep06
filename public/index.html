@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>hello-js-se05-ep-06</title>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <!--script src="https://unpkg.com/vue/dist/vue.min.js"></script-->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+
+  </head>
+  <body>
+    <script>
+      const api = axios.create({
+        baseURL:"http://localhost:3000"
+      })
+
+    </script>
+    <div id="savepessoa">
+        <form @submit.prevent="dosave">
+            <label><input v-model="pessoa.nome"/></label><br/>
+            <label><input v-model="pessoa.telefone"/></label><br/>
+            <label><input v-model="pessoa.data_nascimento"/></label><br/>
+            <input type="submit"/>
+        </form>
+        <ul id="lista">
+            <li v-for="pessoa in pessoas">
+              {{ pessoa.nome }}       {{ pessoa.telefone}}
+            </li>
+        </ul>
+    </div>
+   
+    <script>
+    new Vue({
+        el: "#savepessoa",
+        data:{
+            pessoas:[],
+            pessoa:{
+                nome:"",
+                telefone:"",
+                data_nascimento:""
+            }
+        },
+        created(){
+            this.dolist();
+        },
+        methods:{
+            dosave(){
+                api.post("/addpessoa", this.pessoa).then(_ => {
+                    alert("salvei");
+                    this.dolist();
+                })
+            },
+            dolist() {
+                api.get("/listpessoas")
+                .then(ret => this.pessoas = ret.data)
+            }
+        }
+    })
+    
+    </script>
+  </body>
+</html>
